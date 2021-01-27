@@ -9,5 +9,5 @@
 * __*Atcoder*__ : [mario05](https://atcoder.jp/users/mario05) [![](https://run.kaist.ac.kr/badges/atcoder/mario05.svg)](https://atcoder.jp/users/mario5)
 * __*jungol*__ : mario05092929
 
-보통 안풀린 것들은 // not solved 써놓았을텐데 아닌 것들고 간혹 있으니 조심
+**보통 안풀린 것들은 // not solved 써놓았을텐데 아닌 것들고 간혹 있으니 조심**
 
