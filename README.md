@@ -6,7 +6,7 @@ __*Baekjoon*__ : gunwookim
 
 __*SolvedAC*__ : Ruby 5
 
-__*Codeforces*__ : 본계 : Orange_gunwookim (2103), 부계 : Red_gunwookim (2387)
+__*Codeforces*__ : Orange_gunwookim (2103), Red_gunwookim (2387)
 
 __*Atcoder*__ : mario05 (1641)
 
