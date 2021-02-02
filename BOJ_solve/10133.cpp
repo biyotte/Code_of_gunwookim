@@ -7,7 +7,7 @@
 #pragma gcc optimize("Ofast") 
 #pragma gcc optimize("unroll-loops")
 using namespace std;
-const long long INF = 1e9;
+const long long INF = 2e9;
 const int TMX = 1 << 18;
 const long long llINF = 1e18;
 const long long mod = 1e9+7;
@@ -22,16 +22,25 @@ typedef long long ll;
 int n,m,sx,sy;
 vec v[1000005];
 ll cost[1000005],k;
-ll g[1000005],tg[1000005];
-ll ind[1000005],nope[1000005];
+ll l[1000005],r[1000005],tl[1000005],tr[1000005];
+ll ind[1000005];
+
+void pro(int i) {
+	if(l[i] > INF) l[i] = INF+1;
+	if(r[i] > INF) r[i] = INF+1;
+	if(tl[i] > INF) tl[i] = INF+1;
+	if(tr[i] > INF) tr[i] = INF+1;
+
+}
 
 void dfs(int x,int pr) {
 	for(int i : v[x]) {
 		if(i == pr) continue;
-		g[i] = tg[x]*ind[i];
-		tg[i] = tg[x]*(ind[i]-1);
-		if(g[i] > INF) nope[i] = 1, g[i] = INF+1;
-		if(tg[i] > INF) tg[i] = INF+1;
+		l[i] = tl[x]*ind[i];
+		r[i] = (tr[x]+1)*ind[i]-1;
+		tl[i] = tl[x]*(ind[i]-1);
+		tr[i] = (tr[x]+1)*(ind[i]-1)-1;
+		pro(i);
 		dfs(i,x);
 	}
 }
@@ -47,16 +56,16 @@ int main() {
 		ind[x]++, ind[y]++;
 		if(i == 1) sx = x, sy = y;
 	}
-	g[sx] = ind[sx], tg[sx] = ind[sx]-1;
-	g[sy] = ind[sy], tg[sy] = ind[sy]-1;
+	l[sx] = ind[sx]*k, r[sx] = ind[sx]*(k+1)-1, tl[sx] = (ind[sx]-1)*k, tr[sx] = (ind[sx]-1)*(k+1)-1;
+	l[sy] = ind[sy]*k, r[sy] = ind[sy]*(k+1)-1, tl[sy] = (ind[sy]-1)*k, tr[sy] = (ind[sy]-1)*(k+1)-1;
+	pro(sx), pro(sy);
 	dfs(sx,sy), dfs(sy,sx);
-	long long ans = 0; 
+	ll ans = 0; 
 	for(int i = 1;i <= n;i++) {
-		if(nope[i]) continue;
-		int it = lower_bound(cost+1,cost+m+1,k*g[i])-cost;
-		int it2 = lower_bound(cost+1,cost+m+1,(k+1)*g[i])-cost;
+		if(v[i].size() > 1) continue;
+		int it = lower_bound(cost+1,cost+m+1,l[i])-cost;
+		int it2 = upper_bound(cost+1,cost+m+1,r[i])-cost;
 		ans += 1LL*(it2-it)*k;
-		if(ans > llINF) return -1; 
 	}
 	cout << ans;
 }

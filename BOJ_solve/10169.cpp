@@ -120,6 +120,7 @@ int main() {
 			if(dep[x] < dep[y]) swap(x,y);
 			ll val = rans-e[i].val+query(1,1,n,tpos[x]);
 			cout << (val >= llINF ? -1 : val) << '\n';
+			
 		}
 	}
 }
