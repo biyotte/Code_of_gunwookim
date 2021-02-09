@@ -32,15 +32,16 @@ struct Query {
 priority_queue <pair<ll,pi>> qq;
 
 void dij(int l,int r,int mid,int wi) {
-	qq.push({0,{wi,mid}});
-	for(int i = 1;i <= n;i++) for(int j = l;j <= r;j++) d[i][j] = -1;
+	qq.push({-a[wi][mid],{wi,mid}});
+	for(int i = 1;i <= n;i++) for(int j = l;j <= r;j++) d[i][j] = llINF;
+	d[wi][mid] = a[wi][mid];
 	while(!qq.empty()) {
-		ll cosat = -qq.top().x; int x = qq.top().y.x, y = qq.top().y.y; qq.pop();
-		if(d[x][y] != -1) continue;
-		d[x][y] = cost;
+		ll cost = -qq.top().x; int x = qq.top().y.x, y = qq.top().y.y; qq.pop();
+		if(d[x][y] < cost) continue;
 		for(int i = 0;i < 4;i++) {
 			int dx = x+nx[i], dy = y+ny[i];
-			if(dx < 1||dx > n||dy < l||dy > r||d[dx][dy] != -1) continue;
+			if(dx < 1||dx > n||dy < l||dy > r||d[dx][dy] <= cost+a[dx][dy]) continue;
+			d[dx][dy] = cost+a[dx][dy];
 			qq.push({-cost-a[dx][dy],{dx,dy}});
 		}
 	}
@@ -52,7 +53,7 @@ void go(int l,int r,vec &q) {
 	for(int i = 1;i <= n;i++) {
 		dij(l,r,mid,i);
 		for(int j : q) {
-			ans[j] = min(ans[j],d[query[j].x1][query[j].y1]+d[query[j].x2][query[j].y2]+a[i][mid]);
+			ans[j] = min(ans[j],d[query[j].x1][query[j].y1]+d[query[j].x2][query[j].y2]-a[i][mid]);
 		}
 	}
 	vec L,R;
