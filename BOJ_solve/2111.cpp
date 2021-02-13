@@ -42,8 +42,8 @@ void dfs(int x,int pr) {
 				c[pidx[go]] = 1;
 				cnt++;
 			}
-			if(c[idx]) isCactus = false;
-			c[idx] = 1;
+			if(c[i]) isCactus = false;
+			c[i] = 1;
 			ans *= cnt;
 		}
 	}
@@ -53,15 +53,13 @@ int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
 	cin >> n >> m;
 	for(int i = 1;i <= m;i++) {
-		int cn,x,y; cin >> cn >> x, cn--;
-		while(cn--) {
-			cin >> y;
-			v[x].pb({y,++num}), v[y].pb({x,num});
-			swap(x,y);
-		}
+		int x,y; cin >> x >> y;
+		v[x].pb({y,++num}), v[y].pb({x,num});
 	}
 	if(num > 4000000) return -1;
 	num = 0;
-	for(int i = 1;i <= n;i++) if(!d[i]) dfs(i,-1);
+	int com = 0;
+	for(int i = 1;i <= n;i++) if(!d[i]) com++, dfs(i,-1);
+	if(com >= 2) return -1;
 	cout << (isCactus ? ans : 0);
 }
