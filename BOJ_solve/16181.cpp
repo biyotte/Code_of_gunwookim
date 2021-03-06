@@ -21,14 +21,14 @@ typedef pair <ll,ll> pi;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,C,Q,co,sp[100005][20];
-int sz[100005],dep[100005];
-int up[100005],la[400005],tpos[100005];
-int cnt[100005];
-vec v[100005],t[400005];
+int n,C,Q,co,sp[200005][20];
+int sz[200005],dep[200005],c[200005];
+int up[200005],la[800005],tpos[200005];
+int cnt[200005],ch[200005];
+vec v[200005],t[800005];
 
 struct Query {
-	int x,len; // x 에서 len만큼 길다
+	int x,len,co; // x 에서 len만큼 길다
 }q[200005];
 
 bool cmp(int x,int y) {return sz[x] > sz[y];}
@@ -57,18 +57,18 @@ void dfs2(int x,int pr) {
 
 int LCA(int x,int y) {
 	if(dep[x] < dep[y]) swap(x,y);
-	for(int i = 19;i >= 0;i--) {
+	for(int i = 17;i >= 0;i--) {
 		if(dep[x] >= dep[y]+(1 << i)) x = sp[x][i];
 	}
 	if(x == y) return x;
-	for(int i = 19;i >= 0;i--) {
+	for(int i = 17;i >= 0;i--) {
 		if(sp[x][i]^sp[y][i]) x = sp[x][i], y = sp[y][i];
 	}
 	return sp[x][0];
 }
 
 int Find(int x,int ti) {
-	for(int i = 19;i >= 0;i--) {
+	for(int i = 17;i >= 0;i--) {
 		if(ti >= (1 << i)) x = sp[x][i], ti -= (1 << i);
 	}
 	return x;
@@ -85,8 +85,8 @@ void push(int x,int l,int r) {
 }
 
 void update(int x,int l,int r,int wi,int idx) {
-	push(x,l,r);
 	if(wi < l||r < wi) return;
+	push(x,l,r);
 	t[x].pb(idx);
 	if(l == r) return;
 	int mid = (l + r) >> 1;
@@ -94,11 +94,11 @@ void update(int x,int l,int r,int wi,int idx) {
 }
 
 void query(int x,int l,int r,int rl,int rr) {
-	push(x,l,r);
 	if(rl > r||l > rr) return;
+	push(x,l,r);
 	if(rl <= l&&r <= rr) {
 		for(int i : t[x]) er.pb(i);
-		la[x] = 1; push(x,l,r);
+		la[x] = 1;
 		return;
 	}
 	int mid = (l + r) >> 1;
@@ -106,18 +106,26 @@ void query(int x,int l,int r,int rl,int rr) {
 }
 
 void updateLCA(int x,int idx) {
-	while(up[x]) {
+	cnt[c[q[idx].co]]--;
+	c[q[idx].co] += q[idx].len;
+	cnt[c[q[idx].co]]++;
+	while(x) {
 		er.clear();
 		query(1,1,n,tpos[up[x]],tpos[x]);
 		for(int i : er) {
 			int lca = LCA(q[i].x,q[idx].x);
-			cnt[q[i].len]--;
-			q[i].len = dep[q[i].x]-lca;
-			cnt[q[i].len]++;
-			if(q[i].len) update(1,1,n,Find(q[i].x,q[i].len-1),i);
+			if(q[i].len <= dep[q[i].x]-dep[lca]) continue;
+			cnt[c[q[i].co]]--;
+			c[q[i].co] -= q[i].len;
+			q[i].len = dep[q[i].x]-dep[lca];
+			c[q[i].co] += q[i].len;
+			cnt[c[q[i].co]]++;
+			if(q[i].len) update(1,1,n,tpos[Find(q[i].x,q[i].len-1)],i);
 		}
+		
+		x = sp[up[x]][0];
 	}
-	cnt[0]--, cnt[q[idx].len]++;
+	update(1,1,n,tpos[Find(q[idx].x,q[idx].len-1)],idx);
 }
 
 int main() {
@@ -129,14 +137,13 @@ int main() {
 		v[x].pb(y), v[y].pb(x);
 	}
 	dep[1] = 1, dfs(1,-1), dfs2(1,1);
-	for(int i = 1;i < 20;i++) {
+	for(int i = 1;i < 18;i++) {
 		for(int j = 1;j <= n;j++) sp[j][i] = sp[sp[j][i-1]][i-1];
 	}
 	for(int i = 1;i <= Q;i++) {
 		int x,y,z; cin >> x >> y >> z;
-		if(dep[x] > dep[y]) swap(x,y);
-		q[i] = {x,dep[x]-1};
-		updateLCA(x,i);
+		q[i] = {x,dep[x]-1,y};
+		if(q[i].len) updateLCA(x,i);
 		cout << cnt[z] << '\n';
 	}
 }
