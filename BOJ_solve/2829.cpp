@@ -21,53 +21,38 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,k,la[100005];
-int d[100005][105][105];
-vecpi wi;
-
-// not solved
-
-struct L {
-	int l,r;
-}tt[100005],a[100005];
-
-bool cmp(L x,L y) {
-	if(x.l == y.l) return x.r > y.r;
-	return x.l < y.l;
-}
+int a[405][405];
+int sp[805][805];
+int sm[805][805];
+int n;
 
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
-	cin >> n >> k;
+	cin >> n;
 	for(int i = 1;i <= n;i++) {
-		cin >> tt[i].l >> tt[i].r;
-		
-	}
-	sort(tt+1,tt+n+1,cmp);
-	int tn = 0,mx = 0;
-	for(int i = 1;i <= n;i++) {
-		if(tt[i].r <= mx) {k--; continue;}
-		mx = tt[i].r;
-		a[++tn] = tt[i];
-	}
-	k = max(0,k);
-	n = tn;
-	int idx = 0;
-	a[0].r = -1;
-	for(int i = 1;i <= n;i++) {
-		while(idx <= i&&a[idx].r < a[i].l) idx++;
-		la[i] = idx-1;
-	}
-	for(int i = 1;i <= n;i++) {
-		for(int j = 0;j <= k;j++) {
-			d[i][j] = d[i-1][j]+a[i].r-a[i-1].r;
-			if(i-la[i] >= j) {
-				d[i][j] = max(d[i][j],d[la[i]][j-(i-la[i])]);
-			}
-			for(int l = 1)
-			cout << d[i][j] << ' ';
+		for(int j = 1;j <= n;j++) {
+			cin >> a[i][j];
 		}
-		cout << '\n';
 	}
-	cout << d[n][k];
+	for(int i = 1;i <= n;i++) {
+		for(int j = 1;j <= n;j++) {
+			sp[i+j][i] = sp[i+j][i-1]+a[i][j];
+		}
+	}
+	for(int i = 1;i <= n;i++) {
+		for(int j = 1;j <= n;j++) {
+			sm[i-j+n][i] = sm[i-j+n][i-1]+a[i][j];
+		}
+	}
+	int ans = -INF;
+	for(int i = 1;i <= n;i++) {
+		for(int j = 1;j <= n;j++) {
+			for(int len = 1;len <= n;len++) {
+				int sx = i, sy = j, ex = i+len-1, ey = j+len-1;
+				if(ex > n||ey > n) continue;
+				ans = max(ans,(sm[sx-sy+n][ex]-sm[sx-sy+n][sx-1])-(sp[sx+ey][ex]-sp[sx+ey][sx-1]));
+			}
+		}
+	}
+	cout << ans;
 }
