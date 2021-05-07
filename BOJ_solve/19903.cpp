@@ -42,4 +42,4 @@ int main() {
 	for(int j = 1;j <= n;j++) ans = (ans+1LL*d[0][j][0]+1LL*d[0][j][1]) % mod;
 	if(n == k) ans--;
 	cout << ans;
-}
+} 

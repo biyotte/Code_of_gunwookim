@@ -75,6 +75,7 @@ int main() {
 		sort(a+1,a+n+1);
 		for(int i = 1;i <= n;i++) {
 			update(root[i] = new Node(),root[i-1],0,MAXN,a[i].y);
+			
 		}
 		int ans = 0;
 		while(Q--) {
@@ -83,6 +84,7 @@ int main() {
 			int L = lower_bound(a+1,a+n+1,make_pair(y1-1,INF))-a-1;
 			int R = lower_bound(a+1,a+n+1,make_pair(y2+1,0))-a-1;
 			if(L >= R) continue;
+			
 			ans += query(root[L],root[R],0,MAXN,x1,x2);
 		}
 		cout << ans << '\n';

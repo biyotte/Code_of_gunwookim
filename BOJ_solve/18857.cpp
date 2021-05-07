@@ -22,9 +22,14 @@ typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
 
-//not solved
-
 int main() {
-	ios_base::sync_with_stdio(false); cin.tie(0);
-
+	ios_base::sync_with_stdio(false);
+	int cnt = 0,x,st = -INF;
+	while(!cin.eof()) {
+		cin >> x;
+		cnt += x;
+		if(cnt >= INF) return -1;
+		if(st == -INF) st = x;
+	}
+	cout << cnt;
 }

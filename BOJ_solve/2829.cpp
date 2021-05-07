@@ -37,6 +37,7 @@ int main() {
 	for(int i = 1;i <= n;i++) {
 		for(int j = 1;j <= n;j++) {
 			sp[i+j][i] = sp[i+j][i-1]+a[i][j];
+			
 		}
 	}
 	for(int i = 1;i <= n;i++) {
@@ -51,6 +52,7 @@ int main() {
 				int sx = i, sy = j, ex = i+len-1, ey = j+len-1;
 				if(ex > n||ey > n) continue;
 				ans = max(ans,(sm[sx-sy+n][ex]-sm[sx-sy+n][sx-1])-(sp[sx+ey][ex]-sp[sx+ey][sx-1]));
+				
 			}
 		}
 	}

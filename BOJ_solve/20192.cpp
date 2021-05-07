@@ -20,20 +20,19 @@ typedef pair <int,int> pi;
 typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
-typedef long long ll;
-
+ int n;
+vec a;
 
 int main() {
-	ios_base::sync_with_stdio(false); cin.tie(0);
-	int n,m; cin >> n;
+	ios_base::sync_with_stdio(false);
+	cin >> n;
 	for(int i = 1;i <= n;i++) {
-		//!
+		int x; cin >> x; a.pb(x);
 	}
-	cin >> m;
-	
-	int i = 1;
-	while(i <= n) {
-		//!
-		i++;
+	a.erase(unique(all(a)),a.end());
+	int ans = 0;
+	for(int i = 0;i < a.size();i++) {
+		if(i >= 2&&((a[i-2] < a[i-1]&&a[i-1] > a[i])||(a[i-2] > a[i-1]&&a[i-1] < a[i]))) ans++;
 	}
+	cout << ans;
 }
