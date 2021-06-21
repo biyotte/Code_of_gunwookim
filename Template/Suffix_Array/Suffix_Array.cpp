@@ -21,31 +21,33 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+char a[500005];
+int n,len,idx[500005];
+int g[500005],tg[500005];
 
-int main() { 
+bool cmp(int x,int y) {
+	if(g[x]^g[y]) return g[x] < g[y];
+	return g[x+len] < g[y+len];
+}
+
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
-	cin >> n;
-	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
+	cin >> a+1;
+	n = strlen(a+1);
 	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
-		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
-			}
-		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
+		g[i] = a[i]-'a'+1;
+		idx[i] = i;
 	}
-	cout << d[n%2][0][K];
+	len = 1;
+	while(len <= n) {
+		sort(idx+1,idx+n+1,cmp);
+		tg[idx[1]] = 1;
+		for(int i = 2;i <= n;i++) {
+			tg[idx[i]] = tg[idx[i-1]];
+			if(cmp(idx[i-1],idx[i])) tg[idx[i]]++;
+		}
+		for(int i = 1;i <= n;i++) g[i] = tg[i];
+		len *= 2;
+	}
+	for(int i = 1;i <= n;i++) cout << idx[i]-1 << '\n';
 }

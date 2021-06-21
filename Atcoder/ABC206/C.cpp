@@ -9,7 +9,7 @@
 using namespace std;
 const int INF = 1e9;
 const int TMX = 1 << 18;
-const long long llINF = 1e16;
+const long long llINF = 1e18+10;
 const long long mod = 1e9+7;
 const long long hashmod = 100003;
 const int MAXN = 100000;
@@ -21,31 +21,19 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+map <int,int> cnt;
 
-int main() { 
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
+	int n;
 	cin >> n;
-	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
 	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
-		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
-			}
-		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
+		int x; cin >> x;
+		cnt[x]++;
 	}
-	cout << d[n%2][0][K];
+	ll ans = 1LL*n*(n-1)/2;
+	for(pi i : cnt) {
+		ans -= 1LL*i.y*(i.y-1)/2;
+	}
+	cout << ans;
 }

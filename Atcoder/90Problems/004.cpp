@@ -9,7 +9,7 @@
 using namespace std;
 const int INF = 1e9;
 const int TMX = 1 << 18;
-const long long llINF = 1e16;
+const long long llINF = 1e18+10;
 const long long mod = 1e9+7;
 const long long hashmod = 100003;
 const int MAXN = 100000;
@@ -21,31 +21,24 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+int n,m;
+int a[2005][2005];
+int sum[2005][2005];
 
-int main() { 
+int Sum(int x1,int y1,int x2,int y2) {
+	return sum[x2][y2]-sum[x1-1][y2]-sum[x2][y1-1]+sum[x1-1][y1-1];
+}
+
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
-	cin >> n;
-	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
+	cin >> n >> m;
 	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
-		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
-			}
-		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
+		for(int j = 1;j <= m;j++) cin >> a[i][j], sum[i][j] = sum[i-1][j]+sum[i][j-1]-sum[i-1][j-1]+a[i][j];
 	}
-	cout << d[n%2][0][K];
+	for(int i = 1;i <= n;i++) {
+		for(int j = 1;j <= m;j++) {
+			cout << Sum(i,1,i,m)+Sum(1,j,n,j)-a[i][j] << ' ';
+		}
+		cout << '\n';
+	}
 }

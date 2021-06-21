@@ -21,31 +21,34 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+int n,d[1000005],mx,num2,c[1000005];
+struct Query {
+	int op;
+	int x,y;
+}q[1000005];
 
-int main() { 
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
 	cin >> n;
-	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
 	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
-		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
-			}
-		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
+		cin >> q[i].op >> q[i].x;
+		if(q[i].op & 2) cin >> q[i].y;
+		d[i] = -INF;
 	}
-	cout << d[n%2][0][K];
+	d[1] = 0;
+	c[1] = 1;
+	for(int i = 1;i <= n;i++) {
+		int x = q[i].x, y = q[i].y;
+		if(q[i].op & 1) c[x] = 1, d[x] = ++mx;
+		else {
+			if(c[x]) c[y] = 1;
+			num2++;
+			d[y] = max(d[y],d[x]);
+			d[x]--;
+		}
+	}
+	for(int i = 1;i <= n;i++) {
+		if(!c[i]) cout << "-1 ";
+		else cout << n-d[i]-num2 << ' ';
+	}
 }

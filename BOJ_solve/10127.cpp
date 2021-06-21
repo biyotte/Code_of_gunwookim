@@ -19,9 +19,11 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,k,m,l;
-int a[1000005];
-vec v[1000005];
+int n,k,ml,mr,a[1000005],c[1000005];
+int vl[1000005],vr[1000005],isthief[1000005];
+int dl[1000005],dr[1000005];
+vec v[1000005],mn[1000005];
+pi g[1000005];
 
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
@@ -29,29 +31,56 @@ int main() {
 	for(int i = 1;i <= n;i++) {
 		cin >> a[i];
 		v[a[i]].pb(i);
+		mn[a[i]].pb(INF);
+		dl[i] = INF, dr[i] = -INF;
 	}
-	cin >> m >> l;
-	int st = 1,en = n;
-	for(int i = 1;i <= m;i++) {
-		int x; cin >> x;
-		int it = upper_bound(all(v[x]),st)-v[x].begin();
-		if(it == v[x].size()) {
-			cout << "0\n";
-			return 0;
+	cin >> ml >> mr;
+	for(int i = 1;i <= ml;i++) cin >> vl[i], isthief[vl[i]] = 1;
+	for(int i = 1;i <= mr;i++) cin >> vr[i], isthief[vr[i]] = 1;
+	for(int i = 0;i < v[vl[ml]].size();i++) {
+		mn[vl[ml]][i] = v[vl[ml]][i];
+	}
+	for(int i = ml-1;i >= 1;i--) {
+		int pv = (int)v[vl[i+1]].size()-1;
+		for(int j = (int)v[vl[i]].size()-1;j >= 0;j--) {
+			while(pv >= 0&&v[vl[i]][j] < v[vl[i+1]][pv]) pv--;
+			if(pv != (int)v[vl[i+1]].size()-1) mn[vl[i]][j] = mn[vl[i+1]][pv+1];
 		}
-		st = v[x][it];
 	}
-	for(int i = 1;i <= l;i++) {
-		int x; cin >> x;
-		int it = lower_bound(all(v[x]),en)-v[x].begin()-1;
-		if(it == -1) {
-			cout << "0\n";
-			return 0;
+	for(int i = 0;i < v[vl[1]].size();i++) dl[v[vl[1]][i]] = mn[vl[1]][i];
+	for(int i = n-1;i >= 1;i--) dl[i] = min(dl[i],dl[i+1]);
+
+	for(int i = 1;i <= n;i++) {
+		for(int &j : mn[i]) j = -INF;
+	}
+
+	for(int i = 0;i < v[vr[mr]].size();i++) {
+		mn[vr[mr]][i] = v[vr[mr]][i];
+	}
+	for(int i = mr-1;i >= 1;i--) {
+		int pv = 0;
+		for(int j = 0;j < v[vr[i]].size();j++) {
+			while(pv < v[vr[i+1]].size()&&v[vr[i]][j] > v[vr[i+1]][pv]) pv++;
+			if(pv) mn[vr[i]][j] = mn[vr[i+1]][pv-1];
 		}
-		en = v[x][it];
+	} 
+	for(int i = 0;i < v[vr[1]].size();i++) dr[v[vr[1]][i]] = mn[vr[1]][i];
+	for(int i = 2;i <= n;i++) dr[i] = max(dr[i],dr[i-1]);
+	for(int i = 1;i <= n;i++) g[i] = {INF,-INF};
+	for(int i = 1;i <= n;i++) g[a[i]].x = min(g[a[i]].x,dl[i]), g[a[i]].y = max(g[a[i]].y,dr[i]);
+	for(int i = 1;i <= n;i++) {
+		if(g[i].x > g[i].y||isthief[i]) continue;
+		c[g[i].x]++, c[g[i].y+1]--;
 	}
+
 	vec ans;
-	for(int i = st;i <= en;i++) if(a[i] == a[st]) ans.pb(i);
+	for(int i = 1;i <= n;i++) {
+		c[i] += c[i-1];
+		if(c[i] < 0) return 1;
+		if(c[i]&&vr[mr] == a[i]) ans.pb(i);
+	}
+	if(c[n]) return 1;
 	cout << ans.size() << '\n';
 	for(int i : ans) cout << i << ' ';
 }
+ 

@@ -21,31 +21,34 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+int n;
+int a[305];
+int d[305][305];
 
-int main() { 
+// not solved
+
+pi Find(int co,int l,int r) {
+	while(a[l] == co) l++;
+	while(a[r] == co) r--;
+	return {l,r};
+}
+
+int go(int l,int r) {
+	if(l > r) return 0;
+	if(d[l][r] != -1) return d[l][r];
+	if(l == r) return 1;
+	pi g = Find(a[l],l,r);
+	d[l][r] = go(g.x,g.y)+1;
+	g = Find(a[r],l,r);
+	d[l][r] = min(d[l][r],go(g.x,g.y)+1);
+	for(int i = l;i < r;i++) d[l][r] = min(d[l][r],go(l,i)+go(i+1,r));
+	return d[l][r];
+}
+
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
 	cin >> n;
+	memset(d,-1,sizeof(d));
 	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
-	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
-		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
-			}
-		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
-	}
-	cout << d[n%2][0][K];
+	cout << go(1,n);
 }

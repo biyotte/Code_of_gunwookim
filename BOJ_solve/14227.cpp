@@ -21,31 +21,22 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+ll a,b,c,d;
 
-int main() { 
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
-	cin >> n;
-	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
-	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
+	cin >> a >> b >> c >> d;
+	ll ans = llINF;
+	for(int n = 0;a*pow(2,n) <= c;n++) {
+		if(c-a*pow(2,n) != d-b*pow(2,n)) continue;
+		ll diff = c-a*pow(2,n);
+		ll sum = 0;
+		for(ll tn = pow(2,n);tn >= 1;tn /= 2) {
+			sum += diff/tn;
+			diff %= tn;
 		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
-			}
-		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
+		ans = min(ans,sum+n);
 	}
-	cout << d[n%2][0][K];
+	if(ans == llINF) ans = -1;
+	cout << ans;
 }

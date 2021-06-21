@@ -9,7 +9,7 @@
 using namespace std;
 const int INF = 1e9;
 const int TMX = 1 << 18;
-const long long llINF = 1e16;
+const long long llINF = 1e18+10;
 const long long mod = 1e9+7;
 const long long hashmod = 100003;
 const int MAXN = 100000;
@@ -21,31 +21,35 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+int n;
+ll d[5005][5005];
 
-int main() { 
+struct Work {
+	int d,c,s;
+}a[5005];
+
+bool cmp(Work x,Work y) {
+	if(x.d == y.d) {
+		if(x.c == y.c) return x.s < y.s;
+		return x.c < y.c;
+	}
+	return x.d < y.d;
+}
+
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
 	cin >> n;
-	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
 	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
-		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
+		cin >> a[i].d >> a[i].c >> a[i].s;
+	}
+	sort(a+1,a+n+1,cmp);
+	for(int i = 1;i <= n;i++) {
+		for(int j = 1;j <= 5000;j++) {
+			d[i][j] = max(d[i-1][j],d[i][j-1]);
+			if(j-a[i].c >= 0&&j <= a[i].d) {
+				d[i][j] = max(d[i][j],d[i-1][j-a[i].c]+a[i].s);
 			}
 		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
 	}
-	cout << d[n%2][0][K];
+	cout << d[n][5000];
 }

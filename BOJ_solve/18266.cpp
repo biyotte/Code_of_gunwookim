@@ -21,31 +21,36 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,K;
-int a[55];
-ll d[2][50002][11];
+int n,L,w[50005];
+int lsum[50005],rsum[50005];
 
-int main() { 
+// not solved
+
+struct Cow {
+	int w,x,d,time;
+}a[50005];
+
+bool cmpx(Cow x,Cow y) {
+	return x.x < y.x;
+}
+
+bool cmp(Cow x,Cow y) {
+	return x.time < y.time;
+}
+
+int main() {
 	ios_base::sync_with_stdio(false); cin.tie(0);
-	cin >> n;
-	for(int i = 1;i <= n;i++) cin >> a[i];
-	cin >> K;
-	sort(a+1,a+n+1), reverse(a+1,a+n+1);
+	cin >> n >> L;
 	for(int i = 1;i <= n;i++) {
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 0;k <= K;k++) d[i%2][nam][k] = 0;
-		}
-		for(int nam = 0;nam <= 50001;nam++) {
-			for(int k = 1;k <= K;k++) {
-				if(nam > a[i]) d[i%2][nam-a[i]][k] += d[(i+1)%2][nam][k-1];
-				else d[i%2][0][k] += d[(i+1)%2][nam][k-1];
-				d[i%2][nam][k] += d[(i+1)%2][nam][k];
-			}
-		}
-		for(int i = 1;i <= n;i++) {
-			cin >> 
-		}
-		d[i%2][a[i]+1][1]++;
+		cin >> a[i].w >> a[i].x >> a[i].d;
+		if(a[i].d == 1) a[i].time = L-a[i].w;
+		else a[i].time = a[i].w;
 	}
-	cout << d[n%2][0][K];
+	sort(a+1,a+n+1,cmpx);
+	for(int i = 1;i <= n;i++) {
+		w[i] = a[i].x;
+		rsum[i] = rsum[i-1]+(a[i].d == 1);
+	}
+	sort(a+1,a+n+1,cmp);
+	
 }
