@@ -9,11 +9,11 @@
 using namespace std;
 const int INF = 1e9;
 const int TMX = 1 << 18;
-const long long llINF = 1e18+10;
-const long long mod = 20070713;
+const long long llINF = 3e18+10;
+const long long mod = 1e9+7;
 const long long hashmod = 100003;
 const int MAXN = 100000;
-const int MAXM = 1000000;
+const int MAXM = 20000000;
 typedef long long ll;
 typedef long double ld;
 typedef pair <int,int> pi;
@@ -21,47 +21,37 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,k;
-ll m;
-pl a[50005];
-
-bool cmpy(pl x,pl y) {
-    return x.y < y.y;
-}
-
-bool cmpx(pl x,pl y) {
-    return x.x < y.x;
-}
+int n,a[300005];
+ll d[300005];
+char s[300005];
+vec w,h;
+vecpi v[300005];
 
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0);
-    cin >> n >> k >> m;
+    cin >> n >> s+1;
     for(int i = 1;i <= n;i++) {
-        cin >> a[i].x >> a[i].y;
+        cin >> a[i];
+        if(s[i] == 'W') w.pb(i);
+        else h.pb(i);
     }
-    sort(a+1,a+n+1,cmpy);
-    ll sum = 0;
-    priority_queue <ll> q;
-    for(int i = 1;i <= k;i++) {
-        sum += a[i].y;
-        q.push(-a[i].x+a[i].y);
-        if(sum > m) {
-            cout << i-1;
-            return 0;
+    for(int i = 1;i <= n;i++) {
+        if(s[i] == 'W') {
+            int it = lower_bound(all(h),i)-h.begin();
+            if(!it||it == h.size()) continue;
+            v[h[it]].pb({h[it-1],a[i]});
+        }
+        else {
+            int it = lower_bound(all(w),i)-w.begin();
+            if(!it||it == w.size()) continue;
+            v[w[it]].pb({w[it-1],a[i]});
         }
     }
-    sort(a+k+1,a+n+1,cmpx);
-    for(int i = k+1;i <= n;i++) {
-        
-    }
-    for(int i = k+1;i <= n;i++) {
-        ll x = -q.top(); q.pop();
-        sum += x; sum += a[i].y;
-        q.push(-a[i].x+a[i].y);
-        if(sum > m) {
-            cout << i-1;
-            return 0;
+    for(int i = 1;i <= n;i++) {
+        d[i] = d[i-1];
+        for(pi j : v[i]) {
+            d[i] = max(d[i],d[j.x]+j.y);
         }
     }
-    cout << n;
+    cout << d[n];
 }
