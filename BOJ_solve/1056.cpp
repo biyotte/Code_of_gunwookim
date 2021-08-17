@@ -61,3 +61,4 @@ int main() {
     cin >> n;
     cout << go(n);
 }
+
