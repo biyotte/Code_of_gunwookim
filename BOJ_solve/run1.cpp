@@ -55,24 +55,13 @@ void dfs(int x,int y,int dir,int dist) {
         dfs(x+nx[dir],y+ny[dir],dir,dist+2);
         if(dir < 2) a[x][y] = '-';
         else a[x][y] = '|';
-        Change(dist-1);
-        int ndir,ra = rand()%2;
-        if(ra) {
-            a[x][y] = '/';
-            ndir = 3-dir;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-            a[x][y] = '\\';
-            ndir = dir^2;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-        }
-        else {
-            a[x][y] = '\\';
-            ndir = dir^2;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-            a[x][y] = '/';
-            ndir = 3-dir;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-        }
+        Change(dist+1);
+        a[x][y] = '/';
+        int ndir = 3-dir;
+        dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
+        a[x][y] = '\\';
+        ndir = dir^2;
+        dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
         a[x][y] = '?';
     }
     else if(a[x][y] == '.') dfs(x+nx[dir],y+ny[dir],dir,dist+2);
@@ -86,10 +75,10 @@ void dfs(int x,int y,int dir,int dist) {
     }
     else if(a[x][y] == '@') return;
     else if(a[x][y] == '-') {
-        if(dir < 2) Change(dist-1);
+        if(dir < 2) Change(dist+1);
     }
     else {
-        if(dir >= 2) Change(dist-1);
+        if(dir >= 2) Change(dist+1);
     }
 }
 
@@ -119,14 +108,12 @@ int main() {
             }
         }
     }
-    random_shuffle(all(v));
-    for(pi l : v) {
-        ch = 0;
-        cout << "Start : " << i << ' ' << j << '\n';
-        stx = i, sty = j;
-        dfs(i+nx[di[i][j]],j+ny[di[i][j]],di[i][j],2);
-        if(ch) sx = i, sy = j;
-    }
+    int i = 1, j = 0;
+    ch = 0;
+    cout << "Start : " << i << ' ' << j << '\n';
+    stx = i, sty = j;
+    dfs(i+nx[di[i][j]],j+ny[di[i][j]],di[i][j],2);
+    if(ch) sx = i, sy = j;
     cout << ans << '\n';
     swap(sx,sy);
     if(!sx) cout << "0 " << sy*2-1 << '\n';
