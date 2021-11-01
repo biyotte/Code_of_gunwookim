@@ -20,124 +20,62 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,m,k;
-bool hole[15][25];
-char a[15][25],na[15][25];
-int di[15][25];
-int nx[4] = {1,-1,0,0}, ny[4] = {0,0,1,-1};
-int ans,sx,sy,ch,stx,sty;
-char an[15][25];
-
-void Change(int dist) {
-    if(ans < dist) {
-        ch = 1;
-        ans = dist;
-        cout << ans << '\n';
-        if(!stx) cout << "0 " << sty*2-1 << '\n';
-        if(!sty) cout << stx*2-1 << " 0" << '\n';
-        if(stx == n+1) cout << stx*2-2 << ' ' << sty*2-1 << '\n';
-        if(sty == m+1) cout << stx*2-1 << ' ' << sty*2-2 << '\n';
-        for(int i = 1;i <= n;i++) {
-            for(int j = 1;j <= m;j++) {
-                if(a[i][j] == '?') cout << ".";
-                else cout << (an[i][j] = a[i][j]);
-            }
-            cout << '\n';
-        }
-        cout << "\n\n";
-    }
-}
-
-void dfs(int x,int y,int dir,int dist) {
-    if(hole[x][y]) Change(dist-2);
-    if(a[x][y] == '?') {
-        a[x][y] = '.';
-        dfs(x+nx[dir],y+ny[dir],dir,dist+2);
-        if(dir < 2) a[x][y] = '-';
-        else a[x][y] = '|';
-        Change(dist-1);
-        int ndir,ra = rand()%2;
-        if(ra) {
-            a[x][y] = '/';
-            ndir = 3-dir;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-            a[x][y] = '\\';
-            ndir = dir^2;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-        }
-        else {
-            a[x][y] = '\\';
-            ndir = dir^2;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-            a[x][y] = '/';
-            ndir = 3-dir;
-            dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-        }
-        a[x][y] = '?';
-    }
-    else if(a[x][y] == '.') dfs(x+nx[dir],y+ny[dir],dir,dist+2);
-    else if(a[x][y] == '\\') {
-        int ndir = dir^2;
-        dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-    }
-    else if(a[x][y] == '/') {
-        int ndir = 3-dir;
-        dfs(x+nx[ndir],y+ny[ndir],ndir,dist+2);
-    }
-    else if(a[x][y] == '@') return;
-    else if(a[x][y] == '-') {
-        if(dir < 2) Change(dist-1);
-    }
-    else {
-        if(dir >= 2) Change(dist-1);
-    }
-}
+int n;
+char a[35][35];
+ld k,E1,E2,d = 0.99992,T = 10;
 
 int main() {
-    //ios_base::sync_with_stdio(false); cin.tie(0);
-    cin >> n >> m;
-    for(int i = 1;i <= n;i++) cin >> a[i]+1;
-    for(int i = 0;i <= n+1;i++) a[i][0] = a[i][m+1] = '@';
-    for(int i = 0;i <= m+1;i++) a[0][i] = a[n+1][i] = '@';
-    for(int i = 0;i < n+1;i++) {
-        for(int j = 0;j <= m+1;j++) na[i][j] = a[i][j];
+    ios_base::sync_with_stdio(false); cin.tie(0);
+    cin >> n;
+    for(int i = 1;i <= n;i++) {
+        cin >> a[i]+1;
     }
-    cin >> k;
-    for(int i = 1;i <= k;i++) {
-        int x,y; cin >> x >> y;
-        swap(x,y);
-        if(!x) hole[0][y/2+1] = 1, di[0][y/2+1] = 0;
-        if(x == 2*n) hole[n+1][y/2+1] = 1, di[n+1][y/2+1] = 1;
-        if(!y) hole[x/2+1][0] = 1, di[x/2+1][0] = 2;
-        if(y == 2*m) hole[x/2+1][m+1] = 1, di[x/2+1][m+1] = 3;
-    }
-    vecpi v;
-    for(int i = 0;i <= n+1;i++) {
-        for(int j = 0;j <= m+1;j++) {
-            if(hole[i][j]) {
-                v.pb({i,j});
+    k = 1.0;
+    int ans = 2000;
+    while(k > 0.0005) {
+        E1 = E2 = 0;
+        for(int i = 1;i <= n;i++) {
+            for(int j = 1;j <= n;j++) {
+                if(a[i][j] == 'T') E1 += 1;
             }
         }
-    }
-    random_shuffle(all(v));
-    for(pi l : v) {
-        ch = 0;
-        cout << "Start : " << i << ' ' << j << '\n';
-        stx = i, sty = j;
-        dfs(i+nx[di[i][j]],j+ny[di[i][j]],di[i][j],2);
-        if(ch) sx = i, sy = j;
-    }
-    cout << ans << '\n';
-    swap(sx,sy);
-    if(!sx) cout << "0 " << sy*2-1 << '\n';
-    if(!sy) cout << sx*2-1 << " 0" << '\n';
-    if(sx == n+1) cout << sx*2-2 << ' ' << sy*2-1 << '\n';
-    if(sy == m+1) cout << sx*2-1 << ' ' << sy*2-2 << '\n';
-    for(int i = 1;i <= n;i++) {
-        for(int j = 1;j <= m;j++) {
-            if(an[i][j] == '?') an[i][j] = '.';
-            cout << an[i][j];
+        int ran = rand()%(n*2);
+        if(ran < n) {
+            for(int i = 1;i <= n;i++) {
+                if(a[ran+1][i] == 'H') a[ran+1][i] = 'T';
+                else a[ran+1][i] = 'H';
+            }
         }
-        cout << '\n';
+        else {
+            for(int i = 1;i <= n;i++) {
+                if(a[i][ran-n+1] == 'H') a[i][ran-n+1] = 'T';
+                else a[i][ran-n+1] = 'H';
+            }
+        }
+        for(int i = 1;i <= n;i++) {
+            for(int j = 1;j <= n;j++) {
+                if(a[i][j] == 'T') E2 += 1;
+            }
+        }
+        ld val = rand()%1000000001;
+        val /= (ld)1000000000.0;
+        ld p = exp((E1-E2)/(k*T));
+        if(p < val) {
+            if(ran < n) {
+                for(int i = 1;i <= n;i++) {
+                    if(a[ran+1][i] == 'H') a[ran+1][i] = 'T';
+                    else a[ran+1][i] = 'H';
+                }
+            }
+            else {
+                for(int i = 1;i <= n;i++) {
+                    if(a[i][ran-n+1] == 'H') a[i][ran-n+1] = 'T';
+                    else a[i][ran-n+1] = 'H';
+                }
+            }
+        }
+        k *= d;
+        ans = min({ans,(int)E1,(int)E2});
     }
+    cout << ans;
 }

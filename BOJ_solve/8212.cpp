@@ -15,17 +15,26 @@ const long long mod = 1e9+7;
 const long long hashmod = 100003;
 typedef long long ll;
 typedef long double ld;
-typedef pair <int,int> pl;
-typedef pair <ll,ll> pi;
+typedef pair <int,int> pi;
+typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
 typedef unsigned long long ull;
-int n;
+int n,ans = 1,la;
+pi a[1000005];
+deque <pi> dq;
 
 int main() {
     ios_base::sync_with_stdio(false); cin.tie(0);
     cin >> n;
-    if(n == 1) n = 2;
-    cout << 1-n%2;
+    for(int i = 1;i <= n;i++) cin >> a[i].x >> a[i].y;
+    for(int i = 1;i <= n;i++) {
+        while(!dq.empty()&&a[dq.front().x].x > a[i].y) dq.pop_front();
+        if(!dq.empty()) ans = max(ans,i-dq.front().y+1);
+        la = i;
+        while(!dq.empty()&&a[dq.back().x].x < a[i].x) la = dq.back().y, dq.pop_back();
+        dq.pb({i,la});
+    }
+    cout << ans;
 }

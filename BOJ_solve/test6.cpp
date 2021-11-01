@@ -2,7 +2,6 @@
 #define x first
 #define y second
 #define pb push_back
-#define sz(v) v.size()
 #define all(v) v.begin(),v.end()
 #pragma gcc optimize("O3")
 #pragma gcc optimize("Ofast") 
@@ -11,10 +10,8 @@ using namespace std;
 const int INF = 1e9;
 const int TMX = 1 << 18;
 const long long llINF = 1e18+10;
-const long long mod = 998244353;
-const long long hmod1 = 1e9+409;
-const long long hmod2 = 1e9+433;
-const long long base = 257;
+const long long mod = 1e9+7;
+const long long hashmod = 100003;
 const int MAXN = 100000;
 const int MAXM = 1000000;
 typedef long long ll;
@@ -24,43 +21,44 @@ typedef pair <ll,ll> pl;
 typedef vector <int> vec;
 typedef vector <pi> vecpi;
 typedef long long ll;
-int n,g[55][55],c[55];
-char a[55];
+int bit;
+int a[1000005],b[1000005],an,bn;
+vector <char> print;
+
+void Print(int x) {
+    print.clear();
+    while(x) {
+        print.pb(x%2+'0');
+        x /= 2;
+    }
+    reverse(all(print));
+    for(char j : print) cout << j;
+}
 
 int main() {
-    ios_base::sync_with_stdio(false); cin.tie(0);
-    int T; cin >> T;
-    while(T--) {
-        cin >> n >> a+1;
-        vec v;
-        memset(c,0,sizeof(c));
-        for(int i = 1;i <= n;i++) {
-            if(a[i] == '2') v.pb(i);
-        }
-        if(v.size() == 0) {
-            cout << "YES\n";
-            for(int i = 1;i <= n;i++) {
-                for(int j = 1;j <= n;j++) {
-                    if(i == j) cout << "X";
-                    else cout << "=";
-                }
-                cout << '\n';
+    //ios_base::sync_with_stdio(false); cin.tie(0);
+    for(bit = 1;1;bit++) {
+        int la = -1;
+        int tmp = bit,no = 0;
+        while(tmp) {
+            int bi = tmp%2;
+            if(la == bi) {
+                if(bi) no |= 2;
+                else no |= 1;
             }
-            continue;
+            la = bi;
+            tmp /= 2;
         }
-        if(v.size() <= 2) {
-            cout << "NO\n";
-            continue;
-        }
-        for(int i = 0;i < v.size();i++) c[v[i]] = v[(i+1)%(int)(v.size())];
-        cout << "YES\n";
-        for(int i = 1;i <= n;i++) {
-            for(int j = 1;j <= n;j++) {
-                if(i == j) cout << "X";
-                else if(c[i] == j) cout << "W";
-                else if(c[j] == i) cout << "-";
-                else cout << "=";
-            }
+        int mn = min(an,bn);
+        if(!(no&1)) a[++an] = bit;
+        if(!(no&2)) b[++bn] = bit;
+        if(mn^min(an,bn)) {
+            int idx = min(an,bn);
+            cout << idx << " : ";
+            Print(a[idx]);
+            cout << ' ';
+            Print(b[idx]);
+            
             cout << '\n';
         }
     }
